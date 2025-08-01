@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>🔐 Crypteur César</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    textarea, input {
+      width: 95%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: none;
+    }
+    button {
+      padding: 10px;
+      margin: 5px 2px;
+      border: none;
+      border-radius: 5px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 10px;
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h3> AHN-Lock 🔒</h3>
+    <input type="number" id="key" placeholder="Entrer une clé (ex: 3)" />
+    <textarea id="message" rows="3" placeholder="Entrer votre message"></textarea>
+    <button onclick="chiffrer()">Chiffrer</button>
+    <button onclick="dechiffrer()">Déchiffrer</button>
+    <div id="resultat" class="result"></div>
+  </div>
+
+  <script>
+    function chiffrer() {
+      const cle = parseInt(document.getElementById("key").value);
+      const message = document.getElementById("message").value.toUpperCase();
+      if (isNaN(cle)) {
+        alert("Veuillez entrer une clé valide !");
+        return;
+      }
+      let res = "";
+      for (let i = 0; i < message.length; i++) {
+        let c = message[i];
+        if (c >= 'A' && c <= 'Z') {
+          let code = ((c.charCodeAt(0) - 65 + cle) % 26) + 65;
+          res += String.fromCharCode(code);
+        } else {
+          res += c;
+        }
+      }
+      document.getElementById("resultat").textContent = "🔐 Message chiffré : " + res;
+    }
+
+    function dechiffrer() {
+      const cle = parseInt(document.getElementById("key").value);
+      const message = document.getElementById("message").value.toUpperCase();
+      if (isNaN(cle)) {
+        alert("Veuillez entrer une clé valide !");
+        return;
+      }
+      let res = "";
+      for (let i = 0; i < message.length; i++) {
+        let c = message[i];
+        if (c >= 'A' && c <= 'Z') {
+          let code = ((c.charCodeAt(0) - 65 - cle + 26) % 26) + 65;
+          res += String.fromCharCode(code);
+        } else {
+          res += c;
+        }
+      }
+      document.getElementById("resultat").textContent = "🔓 Message déchiffré : " + res;
+    }
+  </script>
+</body>
+</html>
