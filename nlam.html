@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>César Message App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #2e2e38;
+      padding: 2rem;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 550px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    img.logo {
+      display: block;
+      margin: 0 auto 1rem;
+      width: 90px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+      color: #f0f0f0;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      font-weight: bold;
+      color: #dddddd;
+    }
+
+    textarea, input {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #444;
+      color: #fff;
+      font-size: 1rem;
+      resize: none;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    button {
+      flex: 1;
+      margin: 0 0.25rem;
+      padding: 0.7rem;
+      font-weight: bold;
+      background-color: #4e54c8;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #6c63ff;
+    }
+
+    #output {
+      margin-top: 1rem;
+      background-color: #333;
+    }
+
+    select {
+      float: right;
+      margin-top: -1rem;
+      background: #444;
+      color: #fff;
+      padding: 0.4rem;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Logo" class="logo">
+    <select onchange="changeLang(this.value)">
+      <option value="fr">Français</option>
+      <option value="en"> English</option>
+    </select>
+    <h1 id="title">Messagerie TERENCE/BENJAMIN</h1>
+
+    <label id="label-message" for="message">Message :</label>
+    <textarea id="message" rows="4" placeholder="Tape ton message ici..."></textarea>
+
+    <label id="label-key" for="key">Clé de décalage :</label>
+    <input type="number" id="key" placeholder="Ex : 3">
+
+    <div class="buttons">
+      <button onclick="chiffrer()" id="btn-encrypt">Chiffrer</button>
+      <button onclick="dechiffrer()" id="btn-decrypt">Déchiffrer</button>
+      <button onclick="copier()" id="btn-copy">Copier</button>
+    </div>
+
+    <label for="output" id="label-result">Résultat :</label>
+    <textarea id="output" rows="4" readonly></textarea>
+  </div>
+
+  <script>
+    const translations = {
+      fr: {
+        title: " Messagerie TERENCE/BENJAMIN",
+        labelMessage: "Message :",
+        labelKey: "Clé de décalage :",
+        labelResult: "Résultat :",
+        btnEncrypt: "Chiffrer",
+        btnDecrypt: "Déchiffrer",
+        btnCopy: "Copier",
+        placeholderMessage: "Tape ton message ici...",
+        placeholderKey: "Ex : 3",
+        placeholderResult: "Résultat du chiffrement..."
+      },
+      en: {
+        title: " Messaging TERENCE/BENJAMIN",
+        labelMessage: "Message:",
+        labelKey: "Shift key:",
+        labelResult: "Result:",
+        btnEncrypt: "Encrypt",
+        btnDecrypt: "Decrypt",
+        btnCopy: "Copy",
+        placeholderMessage: "Type your message here...",
+        placeholderKey: "Ex: 3",
+        placeholderResult: "Encrypted result..."
+      }
+    };
+
+    function changeLang(lang) {
+      document.getElementById("title").textContent = translations[lang].title;
+      document.getElementById("label-message").textContent = translations[lang].labelMessage;
+      document.getElementById("label-key").textContent = translations[lang].labelKey;
+      document.getElementById("label-result").textContent = translations[lang].labelResult;
+      document.getElementById("btn-encrypt").textContent = translations[lang].btnEncrypt;
+      document.getElementById("btn-decrypt").textContent = translations[lang].btnDecrypt;
+      document.getElementById("btn-copy").textContent = translations[lang].btnCopy;
+      document.getElementById("message").placeholder = translations[lang].placeholderMessage;
+      document.getElementById("key").placeholder = translations[lang].placeholderKey;
+      document.getElementById("output").placeholder = translations[lang].placeholderResult;
+    }
+
+    function cesar(text, shift) {
+      return text.toUpperCase().split('').map(char => {
+        let code = char.charCodeAt(0);
+        if (code >= 65 && code <= 90) {
+          return String.fromCharCode(((code - 65 + shift + 26) % 26) + 65);
+        }
+        return char;
+      }).join('');
+    }
+
+    function chiffrer() {
+      let msg = document.getElementById('message').value;
+      let key = parseInt(document.getElementById('key').value);
+      if (isNaN(key)) return alert("Veuillez entrer une clé valide.");
+      document.getElementById('output').value = cesar(msg, key);
+    }
+
+    function dechiffrer() {
+      let msg = document.getElementById('message').value;
+      let key = parseInt(document.getElementById('key').value);
+      if (isNaN(key)) return alert("Veuillez entrer une clé valide.");
+      document.getElementById('output').value = cesar(msg, -key);
+    }
+
+    function copier() {
+      const output = document.getElementById('output');
+      output.select();
+      document.execCommand("copy");
+      alert("Texte copié !");
+    }
+
+    // Langue par défaut
+    changeLang("fr");
+  </script>
+</body>
+</html>
